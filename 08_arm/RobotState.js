@@ -14,7 +14,7 @@ export class RobotState {
       },
       jointOutOfBound: [false, false, false, false, false, false], // Indicadores de si las articulaciones están fuera de los límites
       geometry: {
-        V1: { x: 4.8, y: 0, z: 7.3 }, // Geometría de la articulación V1
+        V1: { x: 3, y: 0, z: 3 }, // Geometría de la articulación V1
         V2: { x: 0, y: 0, z: 13.0 }, // Geometría de la articulación V2
         V3: { x: 1, y: 0, z: 2 }, // Geometría de la articulación V3
         V4: { x: 12.6, y: 0, z: 0 }, // Geometría de la articulación V4

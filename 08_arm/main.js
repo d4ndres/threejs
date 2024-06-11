@@ -1,5 +1,4 @@
-// main.js
-
+// Importamos las bibliotecas necesarias
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { THREERobot } from './THREERobot.js';
@@ -12,23 +11,38 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 document.body.style.margin = 0;
+
+// Añadimos controles de órbita para la cámara
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// Añadimos luz ambiental a la escena
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
-scene.add(new THREE.GridHelper(100, 100));
 
-// Inicialización del robot y el estado
+// Agrega una neblina en el horizonte. esta se expande desde el punto 0,0,0
+scene.fog = new THREE.Fog(0x000000, 100, 200);
+
+// Añadimos una cuadrícula a la escena
+scene.add(new THREE.GridHelper(1000, 1000));
+
+// Inicialización del estado del robot
 const robotState = new RobotState();
 const geometry = Object.values(robotState.getState().geometry).map(val => [val.x, val.y, val.z]);
 const jointLimits = Object.values(robotState.getState().jointLimits);
-const visualRobot = new THREERobot(geometry, jointLimits, scene);
 
-// Actualización de ángulos en base al estado del robot
+// Inicialización del robot visual en la escena
+const visualRobot = new THREERobot(geometry, jointLimits, scene);
+visualRobot.THREE.rotation.x = -Math.PI / 2;
+// Variables para animación
+let clock = new THREE.Clock(); // Reloj para medir el tiempo transcurrido
+let speed = 0.5; // Velocidad de la animación
+
+// Función para actualizar los ángulos del robot en base al estado
 function updateRobot() {
   const angles = Object.values(robotState.getState().angles);
   visualRobot.setAngles(angles);
 
+  // Verificamos si las articulaciones están fuera de los límites y las resaltamos si es necesario
   for (let i = 0; i < 6; i++) {
     if (!robotState.getState().jointOutOfBound[i] && robotState.getState().jointOutOfBound[i]) {
       visualRobot.highlightJoint(i, 0xff0000);
@@ -38,26 +52,43 @@ function updateRobot() {
   }
 }
 
-// Añadir una caja simple para referencia
+// Función para animar los ángulos del robot
+function animateAngles() {
+  const elapsed = clock.getElapsedTime() * speed;
+
+  const angles = {
+    j0: 0,
+    j1: Math.sin(elapsed) * Math.PI / 4,
+    j2: 0,
+    j3: 0,
+    j4: Math.sin(elapsed) * Math.PI / 4,
+    j5: 0,
+  };
+
+  robotState.setAngles(angles);
+}
+
+// Añadimos una caja simple a la escena para referencia
 const box = new THREE.Mesh(
   new THREE.BoxGeometry(1, 1, 1),
   new THREE.MeshBasicMaterial({ color: 'salmon' })
 );
 scene.add(box);
 
-// Animación
+// Función de animación
 function animation() {
   requestAnimationFrame(animation);
+  animateAngles(); // Actualizamos los ángulos de las articulaciones
+  updateRobot(); // Actualizamos la visualización del robot
   renderer.render(scene, camera);
-  updateRobot();
 }
 animation();
 
-// Configuración de la posición inicial de la cámara
-camera.position.set(0, -40, 0);
+// Configuramos la posición inicial de la cámara
+camera.position.set(30, 25, 30);
 camera.lookAt(0, 0, 0);
 
-// Añadir luces a la escena
+// Añadimos una luz direccional a la escena
 const light = new THREE.DirectionalLight(0xffffff);
 light.position.set(1, 1, 1).normalize();
 scene.add(light);

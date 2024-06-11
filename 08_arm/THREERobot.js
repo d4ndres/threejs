@@ -52,7 +52,7 @@ export class THREERobot {
 
     // Creamos la geometría y el mesh de la articulación
     const jointGeo1 = new THREE.CylinderGeometry(0.8, 0.8, 1.6, 32);
-    const jointMesh1 = new THREE.Mesh(jointGeo1, new THREE.MeshBasicMaterial({ color: 0xffbb00 }));
+    const jointMesh1 = new THREE.Mesh(jointGeo1, new THREE.MeshPhongMaterial({ color: 0xffbb00 }));
     const joint = new THREE.Group(); // Creamos un grupo para la articulación
     joint.add(jointMesh1); // Añadimos la geometría de la articulación al grupo
     this.joints.push(joint); // Añadimos la articulación a la lista de articulaciones
