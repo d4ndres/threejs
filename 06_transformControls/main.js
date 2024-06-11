@@ -28,7 +28,7 @@ class Caja extends THREE.Mesh {
 
   activeTransformControls() {
     if(!keyControls.someActive) return
-    
+
     tControls.attach(this)
     scene.add(tControls)
 
@@ -52,7 +52,6 @@ tControls.addEventListener('dragging-changed', (event) => {
 })
 
 const puntero = new THREE.Raycaster();
-
 
 
 
