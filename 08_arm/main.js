@@ -43,11 +43,11 @@ const angles = {
   j5: 0,
 };
 gui.add(angles, 'j0', -Math.PI, Math.PI).name('Base').step(0.01);
-gui.add(angles, 'j1', -Math.PI/2, Math.PI/2).name('Shoulder').step(0.01);
-gui.add(angles, 'j2', -Math.PI, Math.PI).name('Elbow').step(0.01);
-gui.add(angles, 'j3', -Math.PI, Math.PI).name('Wrist 1').step(0.01);
-gui.add(angles, 'j4', -Math.PI, Math.PI).name('Wrist 2').step(0.01);
-gui.add(angles, 'j5', -Math.PI, Math.PI).name('Wrist 3').step(0.01);
+gui.add(angles, 'j1', -Math.PI/2, Math.PI/2).name('joint 1').step(0.01);
+gui.add(angles, 'j2', -Math.PI, Math.PI).name('joint 2').step(0.01);
+gui.add(angles, 'j3', -Math.PI, Math.PI).name('joint 3').step(0.01);
+gui.add(angles, 'j4', -Math.PI, Math.PI).name('joint 4').step(0.01);
+gui.add(angles, 'j5', -Math.PI, Math.PI).name('joint 5').step(0.01);
 
 
 
