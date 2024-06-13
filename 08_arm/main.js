@@ -3,6 +3,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { THREERobot } from './THREERobot.js';
 import { RobotState } from './RobotState.js';
+import * as dat from 'dat.gui';
+
+
 
 // Configuración básica de Three.js
 const scene = new THREE.Scene();
@@ -24,6 +27,26 @@ scene.fog = new THREE.Fog(0x000000, 100, 200);
 
 // Añadimos una cuadrícula a la escena
 scene.add(new THREE.GridHelper(1000, 1000));
+
+
+// Objeto angulos del robot en dat.GUI
+const gui = new dat.GUI();
+const angles = {
+  j0: 0,
+  j1: 0,
+  j2: 0,
+  j3: 0,
+  j4: 0,
+  j5: 0,
+};
+gui.add(angles, 'j0', -Math.PI, Math.PI).name('Base').step(0.01);
+gui.add(angles, 'j1', 0, Math.PI/2).name('Shoulder').step(0.01);
+gui.add(angles, 'j2', -Math.PI, Math.PI).name('Elbow').step(0.01);
+gui.add(angles, 'j3', -Math.PI, Math.PI).name('Wrist 1').step(0.01);
+gui.add(angles, 'j4', -Math.PI, Math.PI).name('Wrist 2').step(0.01);
+gui.add(angles, 'j5', -Math.PI, Math.PI).name('Wrist 3').step(0.01);
+
+
 
 // Inicialización del estado del robot
 const robotState = new RobotState();
@@ -54,16 +77,9 @@ function updateRobot() {
 
 // Función para animar los ángulos del robot
 function animateAngles() {
-  const elapsed = clock.getElapsedTime() * speed;
-
-  const angles = {
-    j0: 0,
-    j1: Math.sin(elapsed) * Math.PI / 4,
-    j2: 0,
-    j3: 0,
-    j4: Math.sin(elapsed) * Math.PI / 4,
-    j5: 0,
-  };
+  //Variable definida para crear animación
+  // const elapsed = clock.getElapsedTime() * speed;
+  // angles.j0 = Math.sin(elapsed) * Math.PI / 2;
 
   robotState.setAngles(angles);
 }
