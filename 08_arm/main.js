@@ -17,6 +17,9 @@ document.body.style.margin = 0;
 
 // Añadimos controles de órbita para la cámara
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.maxDistance = 100;
+controls.minDistance = 10;
+
 
 // Añadimos luz ambiental a la escena
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -33,14 +36,14 @@ scene.add(new THREE.GridHelper(1000, 1000));
 const gui = new dat.GUI();
 const angles = {
   j0: 0,
-  j1: 0,
+  j1: Math.PI / 4,
   j2: 0,
   j3: 0,
-  j4: 0,
+  j4: -Math.PI / 1.5,
   j5: 0,
 };
 gui.add(angles, 'j0', -Math.PI, Math.PI).name('Base').step(0.01);
-gui.add(angles, 'j1', 0, Math.PI/2).name('Shoulder').step(0.01);
+gui.add(angles, 'j1', -Math.PI/2, Math.PI/2).name('Shoulder').step(0.01);
 gui.add(angles, 'j2', -Math.PI, Math.PI).name('Elbow').step(0.01);
 gui.add(angles, 'j3', -Math.PI, Math.PI).name('Wrist 1').step(0.01);
 gui.add(angles, 'j4', -Math.PI, Math.PI).name('Wrist 2').step(0.01);
@@ -50,12 +53,15 @@ gui.add(angles, 'j5', -Math.PI, Math.PI).name('Wrist 3').step(0.01);
 
 // Inicialización del estado del robot
 const robotState = new RobotState();
+console.log(Object.values(robotState.getState().geometry).map(val => [val.x, val.y, val.z]));
 const geometry = Object.values(robotState.getState().geometry).map(val => [val.x, val.y, val.z]);
 const jointLimits = Object.values(robotState.getState().jointLimits);
 
 // Inicialización del robot visual en la escena
 const visualRobot = new THREERobot(geometry, jointLimits, scene);
 visualRobot.THREE.rotation.x = -Math.PI / 2;
+visualRobot.THREE.position.set(0, 1/2, 0);
+
 // Variables para animación
 let clock = new THREE.Clock(); // Reloj para medir el tiempo transcurrido
 let speed = 0.5; // Velocidad de la animación
@@ -84,12 +90,7 @@ function animateAngles() {
   robotState.setAngles(angles);
 }
 
-// Añadimos una caja simple a la escena para referencia
-const box = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: 'salmon' })
-);
-scene.add(box);
+
 
 // Función de animación
 function animation() {
@@ -101,7 +102,7 @@ function animation() {
 animation();
 
 // Configuramos la posición inicial de la cámara
-camera.position.set(30, 25, 30);
+camera.position.set(14, 14, 20);
 camera.lookAt(0, 0, 0);
 
 // Añadimos una luz direccional a la escena

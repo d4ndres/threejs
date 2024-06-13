@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 // Definimos la clase THREERobot, que representa un robot en la escena de Three.js
 export class THREERobot {
-  constructor(V_initial, limits, scene) {
+  constructor(geometries, limits, scene) {
     // Creamos un grupo que contendrá todas las partes del robot
     this.THREE = new THREE.Group();
     this.robotBones = []; // Array para almacenar las partes del robot (huesos)
@@ -12,19 +12,31 @@ export class THREERobot {
     this.scene = scene; // Guardamos la escena en la que se añadirá el robot
     scene.add(this.THREE); // Añadimos el grupo del robot a la escena
 
-    const colors = ['blue', 'green', 'salmon', 'hotpink', 'cyan', 0x0]; // Colores para las diferentes partes del robot
+    const colors = ['blue', 'green', 'salmon', 'hotpink', 'cyan', 'white']; // Colores para las diferentes partes del robot
     let parentObject = this.THREE; // Referencia al objeto padre para jerarquía de transformaciones
 
-    V_initial.push([0, 0, 0]); // Añadimos un pseudo enlace para tener 6 ejes
+    // geometries.push([0, 0, 0]); // Añadimos un pseudo enlace para tener 6 ejes
 
     // Variables para posición inicial de los enlaces
     let x = 0, y = 0, z = 0;
 
     // Iteramos sobre los enlaces iniciales para crear las partes del robot
-    for (let i = 0; i < V_initial.length; i++) {
-      const link = V_initial[i];
-      const linkLimit = limits[i] || [-Infinity, Infinity]; // Definimos los límites de los enlaces
-      const linkGeo = this.createCube(x, y, z, link[0], link[1], link[2], linkLimit[0], linkLimit[1], i, colors); // Creamos la geometría del enlace
+    for (let i = 0; i < geometries.length; i++) {
+      const link = geometries[i];
+      
+      // Funcionalidad no implementada
+      // const linkLimit = limits[i] || [-Infinity, Infinity]; // Definimos los límites de los enlaces
+      
+      const linkGeo = this.createCube({
+        x, 
+        y, 
+        z, 
+        w: link[0], 
+        h: link[1], 
+        d: link[2],
+        jointNumber: i, 
+        colors
+      }); // Creamos la geometría del enlace
       x = link[0]; // Actualizamos la posición x para el siguiente enlace
       y = link[1]; // Actualizamos la posición y para el siguiente enlace
       z = link[2]; // Actualizamos la posición z para el siguiente enlace
@@ -35,17 +47,17 @@ export class THREERobot {
   }
 
   // Método para crear un cubo (parte del robot) y añadirle una articulación
-  createCube(x, y, z, w, h, d, min, max, jointNumber, colors) {
+  createCube({x, y, z, w, h, d, min, max, jointNumber, colors}) {
     const thicken = 1; // Engrosar el tamaño del cubo
     const w_thickened = Math.abs(w) + thicken;
     const h_thickened = Math.abs(h) + thicken;
     const d_thickened = Math.abs(d) + thicken;
 
-    const material = new THREE.MeshLambertMaterial({ color: colors[jointNumber] }); // Material del cubo con color específico
+    const material = new THREE.MeshPhongMaterial({ color: colors[jointNumber] }); // Material del cubo con color específico
     const geometry = new THREE.BoxGeometry(w_thickened, h_thickened, d_thickened); // Geometría del cubo
     const mesh = new THREE.Mesh(geometry, material); // Creamos el cubo con la geometría y el material
-
     mesh.position.set(w / 2, h / 2, d / 2); // Posicionamos el cubo
+    
     const group = new THREE.Object3D(); // Creamos un objeto grupo para contener el cubo y la articulación
     group.position.set(x, y, z); // Posicionamos el grupo
     group.add(mesh); // Añadimos el cubo al grupo
@@ -58,6 +70,8 @@ export class THREERobot {
     this.joints.push(joint); // Añadimos la articulación a la lista de articulaciones
 
     // Configuramos la rotación de la articulación según su número
+
+    // Definición de tipo de articulación. Prismática o rotational. 1/2
     switch (jointNumber) {
       case 0:
         joint.rotation.x = Math.PI / 2;
@@ -71,7 +85,7 @@ export class THREERobot {
       case 5:
         joint.rotation.x = Math.PI / 2;
         group.rotation.y = Math.PI / 2;
-        this.addArrows(group); // Añadimos flechas de dirección en el último enlace
+        // this.addArrows(group); // Añadimos flechas de dirección en el último enlace
         break;
     }
 
@@ -93,6 +107,7 @@ export class THREERobot {
   }
 
   // Método para establecer los ángulos de las articulaciones del robot
+  // Definición de tipo de articulación. Prismática o rotational. 2/2
   setAngles(angles) {
     this.angles = angles;
     this.robotBones[0].rotation.z = angles[0];
