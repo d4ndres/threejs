@@ -77,7 +77,6 @@ export class ArmRobot {
 
   setAngles(angles) {
     this.bones.forEach((boneData, index) => {
-      // this.bones[index].rotation.y += 0.01;
       const angle = angles[index];
       switch (this.morphology[index].axisEnd) 
       {

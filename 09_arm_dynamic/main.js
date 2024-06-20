@@ -49,6 +49,7 @@ const angles = {
   j1: 0,
   j2: 0,
   j3: 0,
+  j4: 0,
 };
 gui.add(angles, 'j0', -Math.PI, Math.PI).name('Base').step(0.01);
 gui.add(angles, 'j1', -Math.PI/2, Math.PI/2).name('joint 1').step(0.01);
@@ -60,13 +61,11 @@ const robot = new ArmRobot({
   origin: [0,0,0],
   markers: true,
   morphology: [
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
-    { angle: 0, type: 'rotational', axisEnd: 'y', geometry: [0,1,0] },
+    { angle: angles.j0, type: 'rotational', axisEnd: 'z', geometry: [0,1,0] },
+    { angle: angles.j1, type: 'rotational', axisEnd: 'z', geometry: [0,1,0] },
+    { angle: angles.j2, type: 'rotational', axisEnd: 'z', geometry: [0,1,0] },
+    { angle: angles.j3, type: 'rotational', axisEnd: 'z', geometry: [0,1,0] },
+    { angle: angles.j4, type: 'rotational', axisEnd: 'z', geometry: [0,1,0] },
     
   ]
 });
@@ -75,7 +74,7 @@ function animation() {
   requestAnimationFrame(animation);
   
   robot.update({
-    angles: [angles.j0, angles.j1, angles.j2, angles.j3]
+    angles: [angles.j0, angles.j1, angles.j2, angles.j3, angles.j4],
   });
   // console.log(robot.morphology.map(bone => bone.angle));
 
